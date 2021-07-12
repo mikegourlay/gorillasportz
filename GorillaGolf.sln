@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2024
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GorillaGolfCommon", "GorillaGolfCommon\GorillaGolfCommon.csproj", "{80D671DD-7611-480B-A048-67D0BD065D4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GorillaGolfWeb", "GorillaGolfWeb\GorillaGolfWeb.csproj", "{06E7091D-1C26-4EBF-83CF-B02E4A4E843D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{80D671DD-7611-480B-A048-67D0BD065D4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80D671DD-7611-480B-A048-67D0BD065D4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80D671DD-7611-480B-A048-67D0BD065D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80D671DD-7611-480B-A048-67D0BD065D4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06E7091D-1C26-4EBF-83CF-B02E4A4E843D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06E7091D-1C26-4EBF-83CF-B02E4A4E843D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06E7091D-1C26-4EBF-83CF-B02E4A4E843D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06E7091D-1C26-4EBF-83CF-B02E4A4E843D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A6864D41-097B-4160-B8A8-EC9D78166BB4}
+	EndGlobalSection
+EndGlobal

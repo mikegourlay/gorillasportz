@@ -1,0 +1,227 @@
+﻿@using GorillaGolfCommon.golf
+@model GorillaGolfCommon.golf.Outing
+
+@{
+    ViewBag.Title = "OutingView";
+    Layout = "~/Areas/Admin/Views/Shared/Modal_Layout.cshtml";
+}
+
+<div class="buttonheader headerBanner">
+    <table style="width: 100%">
+        <tr>
+            <td style="text-align: left">
+                <input id="BackBtn" type="button" value="Back" class="ui-button ui-corner-all" onclick="location.href = '@Url.Action("OutingList", "Admin")'" />
+            </td>
+            @if (Model.Season == Season.CurrentSeason)
+            {
+                <td style="text-align: center">
+                    <input id="ScoreBtn" type="button" value="Score" class="ui-button ui-corner-all"
+                           onclick="if (confirmEditAction()) { location.href = '@Url.Action("ScoreOuting", "Admin", new {outingid = Model.OutingID})' }" />
+                </td>
+            }
+            @if (!Model.Committed)
+            {
+                <td style="text-align: center">
+                    <input id="FinalizeBtn" type="button" value="Publish" class="ui-button ui-corner-all" onclick="location.href = '@Url.Action("CommitOuting", "Admin", new {outingid = Model.OutingID})'" />
+                </td>
+            }
+            @if (!Model.Settled)
+            {
+                <td style="text-align: center">
+                    <input id="SettleBtn" type="button" value="Settle ($)" class="ui-button ui-corner-all" onclick="location.href = '@Url.Action("SettleOuting", "Admin", new {outingid = Model.OutingID})'" />
+                </td>
+            }
+            else
+            {
+                <td style="text-align: center">
+                    <input id="UnsettleBtn" type="button" value="Unsettle ($)" class="ui-button ui-corner-all" onclick="location.href = '@Url.Action("UnsettleOuting", "Admin", new {outingid = Model.OutingID})'" />
+                </td>
+            }
+            @if (Model.Season == Season.CurrentSeason)
+            {
+                <td style="text-align: right">
+
+                    <input type="button" id="EditOutingBtn" value="Edit" class="ui-button ui-corner-all"
+                           onclick="if (confirmEditAction()) { location.href = '@Url.Action("EditOuting", "Admin", new {outingid = Model.OutingID})' }" />
+                </td>
+            }
+        </tr>
+    </table>
+</div>
+
+@Html.ValidationSummary(true, "Publish could not occur. Please correct the following and try again...", new { style = "color:#e00" })
+
+<b>@Model.Course.Name</b>
+@if (Model.Committed)
+{<span> - </span><span style="color: white; background-color: #e00;padding:2px 5px"> Published </span>}
+@if (Model.Settled)
+{<span>&nbsp;-&nbsp;</span><span style="color: white; background-color: #e00;padding:2px 5px"> Settled ($) </span>}
+else
+{<span>&nbsp;-&nbsp;</span><span style="color: black"> UNSETTLED ($) </span>}
+<br />
+@Model.OutingDate.ToShortDateString()
+<br />
+<br />
+@for (var g = 0; g < Model.GroupList.Count; g++)
+{
+    <table style="margin-top:60px">
+        <tr>
+            <td class="groupDisplay">
+                <input id="groubbtn@(g)" type="button" class="ui-button ui-corner-all collapsed-button" value="Grp @(g + 1)" onclick="toggleScores(this.id, @(g))" />
+            </td>
+            @foreach (var player in Model.GroupList[g].PlayerList)
+            {
+                <th class="playerLabel">
+                    <div><span>@player.Player.ShortName</span></div>
+                </th>
+            }
+        </tr>
+        @for (int h = 0; h < Model.Course.HoleList.Count; h++)
+        {
+            <tr class=" group@(g)" style="display:none">
+                <td class="holedisplay">
+                    @Model.Course.HoleList[h].HoleNumber
+                    <div class="pardisplay">@Model.Course.HoleList[h].Par</div>
+                </td>
+                @foreach (var player in Model.GroupList[g].PlayerList)
+                {
+                    <td class="scoredisplay">
+                        <div class='@(player.Scores[h].Skin ? "skindisplay" : "noskindisplay")'></div>
+
+                        @(player.Scores[h].Strokes == 0 ? "" : player.Scores[h].Strokes.ToString())
+
+                        <div class='@(player.Scores[h].Hics == 1
+            ? "onehic"
+            : @player.Scores[h].Hics == 2
+            ? "twohic"
+            : @player.Scores[h].Hics == 3
+            ? "threehic"
+            : "nohic")'></div>
+                        <div style="clear: both"></div>
+
+                        <div class='@(player.Scores[h].KP ? "kpdisplay" : "")'></div>
+                    </td>
+                }
+            </tr>
+        }
+
+        <tr>
+            <td class="specialsdisplay">Gross</td>
+            @foreach (var player in Model.GroupList[g].PlayerList)
+            {
+                <td class="grossdisplay">
+                    @(player.GrossScore != null ? player.GrossScore.ToString() : "--")
+                </td>
+            }
+        </tr>
+        <tr>
+            <td class="specialsdisplay">C.H.</td>
+            @foreach (var player in Model.GroupList[g].PlayerList)
+            {
+                <td class="ch_display">
+                    @(player.CourseHandicap(Model.Course) != null ? player.CourseHandicap(Model.Course).ToString() : "--")
+                </td>
+            }
+        </tr>
+        <tr>
+            <td class="specialsdisplay">H.I.</td>
+            @foreach (var player in Model.GroupList[g].PlayerList)
+            {
+                <td class="ch_display">
+                    @(player.CourseHIndex(Model.Course) != null ? ((decimal)(player.CourseHIndex(Model.Course))).ToString("0.0") : "--")
+                </td>
+            }
+        </tr>
+        <tr>
+            <td class="specialsdisplay">Net</td>
+            @foreach (var player in Model.GroupList[g].PlayerList)
+            {
+                <td class="netdisplay">
+                    @(player.NetScore(Model.Course) != null ? player.NetScore(Model.Course).ToString() : "--")
+                </td>
+            }
+        </tr>
+        <tr>
+            <td class="specialsdisplay">HICS</td>
+            @foreach (var player in Model.GroupList[g].PlayerList)
+            {
+                <td class="hicsdisplay">
+                    @(player.Hics)
+                </td>
+            }
+        </tr>
+        <tr>
+            <td class="specialsdisplay"><img src="/Content/images/skinindicator-med.png" /></td>
+            @foreach (var player in Model.GroupList[g].PlayerList)
+            {
+                <td class="skinsdisplay">
+                    @(player.Skins)
+                </td>
+            }
+        </tr>
+        <tr>
+            <td class="specialsdisplay"><img src="/Content/images/kpindicator-med.png" width="15" height="15" /></td>
+            @foreach (var player in Model.GroupList[g].PlayerList)
+            {
+                <td class="kpsdisplay">
+                    @(player.KPs)
+                </td>
+            }
+        </tr>
+
+    </table>
+}
+
+<div style="padding-top:20px">
+    <div class="form-group">
+        @Html.Label("No Flip Skin Calculation:")
+        @Model.NoFlipSkins.ToString()
+    </div>
+    <div class="form-group">
+        @Html.Label("Skin Value:")
+        @String.Format("${0:0.##}", Model.SkinValue)
+    </div>
+    <div class="form-group">
+        @Html.Label("HIC Value:")
+        @String.Format("${0:0.##}", Model.HicValue)
+    </div>
+    <div class="form-group">
+        @Html.Label("Low Net Value:")
+        @String.Format("${0:0.##}", Model.LowNetValue)
+    </div>
+    <div class="form-group">
+        @Html.Label("KP Value:")
+        @String.Format("${0:0.##}", Model.KPValue)
+    </div>
+</div>
+
+@if (!Outing.IsCommitted(Model.OutingID))
+{
+    <input type="button" id="DeleteOutingBtn" value="Delete Outing" class="ui-button ui-corner-all"
+           onclick="if (confirm('Okay to remove this outing?')) {location.href = '@Url.Action("RemoveOuting", "Admin", new {outingid = Model.OutingID})'}" />
+}
+
+@section MyScripts {
+    <script>
+        function toggleScores(id, grp) {
+            $('.group' + grp).toggle();
+
+            var btn = $('#' + id);
+            if (btn.hasClass("collapsed-button")) {
+                btn.removeClass("collapsed-button");
+                btn.addClass("expanded-down-button");
+            } else {
+                btn.removeClass("expanded-down-button");
+                btn.addClass("collapsed-button");
+            }
+        }
+
+        function confirmEditAction() {
+            var committed = @(Model.Committed ? "true" : "false");
+            if (committed) {
+                return confirm("This Outing has already been Published.  Modifying the Outing will remove all transactions for the Outing and put it back in an unpublished state.  Continue?");
+            }
+            return true;
+        }
+    </script>
+}

@@ -1,0 +1,361 @@
+﻿@using GorillaGolfCommon.golf
+@model GorillaGolfCommon.golf.Outing
+
+@{
+    ViewBag.Title = "ScoreOuting";
+    Layout = "~/Areas/Admin/Views/Shared/Modal_Layout.cshtml";
+}
+
+@using (Html.BeginForm("ScoreOuting", "Admin", FormMethod.Post, new { id = "ScoreOutingForm" }))
+{
+    <div class="buttonheader headerBanner">
+        <input type="button" id="CancelEditScoreBtn" value="Cancel" class="ui-button ui-corner-all" onclick="location.href = '@Url.Action("ViewOuting", "Admin", new {outingid = Model.OutingID})'" style="float: left" />
+        <input id="SaveOutingBtn" type="submit" value="Save" class="ui-button ui-corner-all" style="float: right" />
+
+    </div>
+    @Html.HiddenFor(x => x.OutingID)
+    @Html.HiddenFor(x => x.Committed)
+    <b>@Model.Course.Name</b> <span>- @Model.OutingDate.ToShortDateString()</span>
+
+    <br />
+    for (var g = 0; g < Model.GroupList.Count; g++)
+    {
+        @Html.HiddenFor(x => x.GroupList[g].GroupID)
+        <table style="margin-top:60px">
+            <tr>
+                <td class="groupDisplay">
+                    <input type="button" class="ui-button ui-corner-all" value="Grp @(g + 1)" onclick="toggleScores(@(g))" />
+                </td>
+                @for (var i = 0; i < Model.GroupList[g].PlayerList.Count; i++)
+                {
+                    @Html.HiddenFor(x => x.GroupList[g].PlayerList[i].Player.PlayerID)
+                    @Html.HiddenFor(x => x.GroupList[g].PlayerList[i].Player.HIndex)
+                    <th class="playerLabel">
+                        <div><span>@Model.GroupList[g].PlayerList[i].Player.ShortName</span></div>
+                    </th>
+                }
+            </tr>
+            @for (int h = 0; h < Model.Course.HoleList.Count; h++)
+            {
+                <tr class="group@(g)">
+                    <td class="holedisplay">
+                        @Model.Course.HoleList[h].HoleNumber
+                    <div class="pardisplay">@Model.Course.HoleList[h].Par</div>
+                </td>
+                @for (int p = 0; p < Model.GroupList[g].PlayerList.Count; p++)
+                {
+                    @Html.HiddenFor(x => x.GroupList[g].PlayerList[p].Scores[h].ScoreID)
+                    @Html.HiddenFor(x => x.GroupList[g].PlayerList[p].Scores[h].HoleNumber)
+                    @Html.HiddenFor(x => x.Course.HoleList[h].Par)
+                    @Html.HiddenFor(x => x.GroupList[g].PlayerList[p].Scores[h].HIndex)
+                    @Html.HiddenFor(x => x.GroupList[g].PlayerList[p].Scores[h].PlayerID)
+                    @Html.HiddenFor(x => x.GroupList[g].PlayerList[p].Scores[h].Strokes)
+                    @Html.HiddenFor(x => x.GroupList[g].PlayerList[p].Scores[h].Hics)
+                    @Html.HiddenFor(x => x.GroupList[g].PlayerList[p].Scores[h].KP)
+                    @Html.HiddenFor(x => x.GroupList[g].PlayerList[p].Scores[h].SkinCarryOvers)
+                    <td class="scoredisplay" onclick="openScoreDialog(this.id, '@Model.GroupList[g].PlayerList[p].Player.ShortName', @Model.Course.HoleList[h].HoleNumber)"
+                        id="GroupList_@(g)__PlayerList_@(p)__Scores_@(h)__StrokesCell">
+
+                        <div id="GroupList_@(g)__PlayerList_@(p)__Scores_@(h)__SkinCarryOversCell"
+                             class='@(Model.GroupList[g].PlayerList[p].Scores[h].SkinCarryOvers ? "skindisplay" : "noskindisplay")'></div>
+
+                        <span id="GroupList_@(g)__PlayerList_@(p)__Scores_@(h)__StrokesDisplay">
+                            @(Model.GroupList[g].PlayerList[p].Scores[h].Strokes == 0 ? "" : @Model.GroupList[g].PlayerList[p].Scores[h].Strokes.ToString())
+                        </span>
+                        <div id="GroupList_@(g)__PlayerList_@(p)__Scores_@(h)__HicsCell"
+                             class='@(Model.GroupList[g].PlayerList[p].Scores[h].Hics == 1
+                                          ? "onehic"
+                                          : @Model.GroupList[g].PlayerList[p].Scores[h].Hics == 2
+                                              ? "twohic"
+                                              : @Model.GroupList[g].PlayerList[p].Scores[h].Hics == 3
+                                                  ? "threehic"
+                                                  : "nohic")'></div>
+                        <div style="clear: both"></div>
+                        <div id="GroupList_@(g)__PlayerList_@(p)__Scores_@(h)__KPCell"
+                             class='@(Model.GroupList[g].PlayerList[p].Scores[h].KP ? "kpdisplay" : "")'></div>
+                    </td>
+                }
+            </tr>
+        }
+        </table>
+    }
+}
+<div id="scoreDialog">
+    <div style="margin-bottom: 10px; width: 100%">
+        <span id="playerTitle" style="float: left;font-size: 2em"></span>
+        <button id="CloseScoreBtn" onclick="closeScoreDialog()" style="float: right; margin-right: -13px; margin-top: -5px; "></button>
+    </div>
+    <div style="clear: both;height:0px"></div>
+    <div style="vertical-align: bottom; width: 100%; text-align: center; padding-top: 5px">
+        <button id="PrevHoleBtn" onclick="onNextHole(-1)" style="margin-bottom:20px"></button>
+        <div style="display: inline-block;padding:0 15px 0 15px">
+            <div id="holeTitle" style="font-size: 4em; line-height: .75em"></div>
+            <div id="parTitle" style="display:inline-block">Par 4</div>
+        </div>
+
+        <button id="NextHoleBtn" onclick="onNextHole(1)" style="margin-bottom:20px"></button>
+    </div>
+    <table style="border-collapse: separate; border-spacing: 30px 0;width:100%">
+        <tr>
+            <th style="text-align: center">Strokes</th>
+            <th style="text-align: center">HICS</th>
+        </tr>
+        <tr>
+            <td style="text-align: center; vertical-align: top">
+                <div id="strokeclear" class="strokebtn togglebtn ui-corner-all" style="font-size: 1em" onclick="strokebtnclick(this.id)">Clear</div>
+                <div id="stroke1" class="strokebtn togglebtn ui-corner-all" onclick="strokebtnclick(this.id)">1</div>
+                <div id="stroke2" class="strokebtn togglebtn ui-corner-all" onclick="strokebtnclick(this.id)">2</div>
+                <div id="stroke3" class="strokebtn togglebtn ui-corner-all" onclick="strokebtnclick(this.id)">3</div>
+                <div id="stroke4" class="strokebtn togglebtn ui-corner-all" onclick="strokebtnclick(this.id)">4</div>
+                <div id="stroke5" class="strokebtn togglebtn ui-corner-all" onclick="strokebtnclick(this.id)">5</div>
+                <div id="stroke6" class="strokebtn togglebtn ui-corner-all" onclick="strokebtnclick(this.id)">6</div>
+                <div id="stroke7" class="strokebtn togglebtn ui-corner-all" onclick="strokebtnclick(this.id)">7</div>
+                <div id="stroke8" t class="strokebtn togglebtn ui-corner-all" onclick="strokebtnclick(this.id)">8</div>
+                <div id="showMoreScoresBtn" class="togglebtn ui-corner-all" onclick="showMoreScores()">!!!</div>
+                <div id="moreScores" style="display: none">
+                    <div id="stroke9" class="strokebtn togglebtn ui-corner-all" onclick="strokebtnclick(this.id)">9</div>
+                    <div id="stroke10" class="strokebtn togglebtn ui-corner-all" onclick="strokebtnclick(this.id)">10</div>
+                    <div id="stroke11" class="strokebtn togglebtn ui-corner-all" onclick="strokebtnclick(this.id)">11</div>
+                    <div id="stroke12" t class="strokebtn togglebtn ui-corner-all" onclick="strokebtnclick(this.id)">12</div>
+                </div>
+            </td>
+            <td style="text-align: center; vertical-align: top">
+                <div id="hic0" class="hicbtn togglebtn  ui-corner-all" onclick="hicbtnclick(this.id)">0</div>
+                <div id="hic1" class="hicbtn togglebtn  ui-corner-all" onclick="hicbtnclick(this.id)">1</div>
+                <div id="hic2" class="hicbtn togglebtn  ui-corner-all" onclick="hicbtnclick(this.id)">2</div>
+                <div id="hic3" class="hicbtn togglebtn  ui-corner-all" onclick="hicbtnclick(this.id)">3</div>
+                <br />
+                <label id="kpcheckboxlabel" for="kpcheckbox">KP</label><br /> <input type="checkbox" id="kpcheckbox" class="kpcheck" onclick="kpclick(this.id)" />
+                <br />
+                <label id="carryovercheckboxlabel" for="carryovercheckbox">Flip Winner</label>
+                <br />
+                <input type="checkbox" id="carryovercheckbox" class="carryovercheck" onclick="carryoverclick(this.id)" />
+            </td>
+        </tr>
+    </table>
+</div>
+
+@section MyScripts {
+    <script>
+
+        var noflip =  @(Model.NoFlipSkins ? "true" : "false");
+
+        $(function () {
+            $('#PrevHoleBtn')
+                .text('')
+                .append("<img height='30' width='30' src='/Content/images/left arrow.png'/>")
+                .button();
+            $('#NextHoleBtn')
+                .text('')
+                .append("<img height='30' width='30' src='/Content/images/right arrow.png'/>")
+                .button();
+            $('#CloseScoreBtn')
+                .text('')
+                .append("<img height='20' width='20' src='/Content/images/closeicon.png'/>")
+                .button();
+        });
+
+
+        $("#scoreDialog").dialog({
+            autoOpen: false,
+            modal: true,
+            width: "300px",
+            dialogClass: "no-titlebar"
+        });
+
+        var scoreDisplayID;
+        var scoreHiddenID;
+        var hicsDisplayID;
+        var hicsHiddenID;
+        var kpDisplayID;
+        var kpHiddenID;
+        var coDisplayID;
+        var coHiddenID;
+        var playerName;
+        var holeNumber;
+        var holePar;
+
+        function setScore(id, playername, holenumber) {
+            scoreDisplayID = id;
+            scoreHiddenID = id.replace("Display", "");
+            hicsHiddenID = scoreHiddenID.replace("Strokes", "Hics");
+            hicsDisplayID = hicsHiddenID + "Cell";
+            kpHiddenID = scoreHiddenID.replace("Strokes", "KP");
+            kpDisplayID = kpHiddenID + "Cell";
+            coHiddenID = scoreHiddenID.replace("Strokes", "SkinCarryOvers");
+            coDisplayID = coHiddenID + "Cell";
+            playerName = playername;
+            holeNumber = holenumber;
+            var holeNumberInt = parseInt(holeNumber);
+            var holeIndex = holeNumberInt > 9 ? holeNumberInt - 10 : holeNumberInt - 1;
+            holePar = parseInt($('#Course_HoleList_' + holeIndex + '__Par').val());
+            var scoreval = $('#' + scoreHiddenID).val();
+            var hicval = $('#' + hicsHiddenID).val();
+            var kpval = $('#' + kpHiddenID).val().toUpperCase() === "TRUE";
+            var coval = $('#' + coHiddenID).val().toUpperCase() === "TRUE";
+
+            $('#playerTitle').html(playerName);
+            $('#holeTitle').html(holeNumber);
+            $('#parTitle').html("Par " + holePar);
+
+            // Hide the more score div if score is less than 9
+            if (parseInt(scoreval, 10) > 8) {
+                $('#moreScores').show();
+                $('#showMoreScoresBtn').hide();
+            } else {
+                $('#moreScores').hide();
+                $('#showMoreScoresBtn').show();
+            }
+
+            // Set the score and hic buttons to current values
+            $('.strokebtn-selected').removeClass('strokebtn-selected');
+            $('.strokebtn').each(function () {
+                if ($(this).html() === scoreval) {
+                    $(this).addClass("strokebtn-selected");
+                }
+            });
+            $('.hicbtn-selected').removeClass('hicbtn-selected');
+            $('.hicbtn').each(function () {
+                if ($(this).html() === hicval) {
+                    $(this).addClass("hicbtn-selected");
+                }
+            });
+
+            // Set the KP checkbox.
+            // Hide it if not a par 3
+            $('#kpcheckbox').prop('checked', kpval);
+            if (holePar === 3) {
+                $('#kpcheckbox').show();
+                $('#kpcheckboxlabel').show();
+            } else {
+                $('#kpcheckbox').hide();
+                $('#kpcheckboxlabel').hide();
+            }
+
+            var onLastHole = (getNextHole(1) === null);
+            var onFirstHole = (getNextHole(-1) === null);
+
+            // Set the CarryOver checkbox and
+            // hide it if not on the last hole.
+            $('#carryovercheckbox').prop('checked', coval);
+            if (onLastHole && !noflip) {
+                $('#carryovercheckbox').show();
+                $('#carryovercheckboxlabel').show();
+            } else {
+                $('#carryovercheckbox').hide();
+                $('#carryovercheckboxlabel').hide();
+            }
+
+            // disable next and previous buttons as needed
+            $('#NextHoleBtn').prop("disabled", onLastHole ? true : false);
+            $('#PrevHoleBtn').prop("disabled", onFirstHole ? true : false);
+        }
+
+        function getNextHole(inc) {
+            var grpindex = scoreDisplayID.indexOf("Scores_");
+            if (grpindex < 0) return null;
+            var head = scoreDisplayID.substring(0, grpindex + 7);
+            var tail = scoreDisplayID.substring(grpindex + 7);
+            var curid = parseInt(tail, 10);
+            var newid = head + tail.replace(curid.toString(), (curid + inc).toString());
+            var next = $('#' + newid);
+            if (next.length === 0) return null;
+            return next;
+        }
+
+        function onNextHole(inc) {
+            var next = getNextHole(inc);
+            if (next == null) return;
+            setScore(next.attr("id"), playerName, holeNumber + inc);
+        }
+
+        function openScoreDialog(id, playername, holenumber) {
+            setScore(id.replace("Cell", "Display"), playername, holenumber);
+            $("#scoreDialog").dialog("open");
+        }
+
+
+        function strokebtnclick(btnid) {
+            // Unselect all other stroke buttons by removing any strokebtn-selected class
+            $('.strokebtn-selected').removeClass('strokebtn-selected');
+
+            // Add strokebtn-selected class to activated button
+            $('#' + btnid).addClass('strokebtn-selected');
+
+            // Get the selected stroke value
+            var stroke = $('#' + btnid).html();
+            if (stroke === 'Clear') stroke = "";
+
+            // Update the hidden input and display label
+            $('#' + scoreDisplayID).html(stroke);
+            $('#' + scoreHiddenID).val(stroke);
+        }
+
+        function hicbtnclick(btnid) {
+            // Unselect all other hic buttons by removing any hicbtn-selected class
+            $('.hicbtn-selected').removeClass('hicbtn-selected');
+
+            // Add hicbtn-selected class to activated button
+            $('#' + btnid).addClass('hicbtn-selected');
+
+            // Get the selected hic value
+            var hics = $('#' + btnid).html();
+
+            // Update the hidden hic input
+            $('#' + hicsHiddenID).val(hics);
+
+            // Update the hic display div
+            $('#' + hicsDisplayID).removeClass();
+            var hicval = parseInt(hics);
+            switch (hicval) {
+                case 1:
+                    $('#' + hicsDisplayID).addClass('onehic');
+                    break;
+                case 2:
+                    $('#' + hicsDisplayID).addClass('twohic');
+                    break;
+                case 3:
+                    $('#' + hicsDisplayID).addClass('threehic');
+                    break;
+                default:
+                    $('#' + hicsDisplayID).addClass('nohic');
+                    break;
+            }
+        }
+
+        function kpclick(id) {
+            // set the hidden kp value
+            var kp = $('#' + id).prop('checked');
+            $('#' + kpHiddenID).val(kp ? "True" : "False");
+
+            // Set the KP display
+            $('#' + kpDisplayID).removeClass();
+            if (kp) $('#' + kpDisplayID).addClass("kpdisplay");
+        }
+
+        function carryoverclick(id) {
+            // set the hidden carryover value
+            var co = $('#' + id).prop('checked');
+            $('#' + coHiddenID).val(co ? "True" : "False");
+
+            // Set the CarryOver display
+            $('#' + coDisplayID).removeClass();
+            if (co) $('#' + coDisplayID).addClass("skindisplay");
+            else $('#' + coDisplayID).addClass("noskindisplay");
+        }
+
+        function showMoreScores() {
+            // Hide the more scores button and show the bigger scores div
+            $('#showMoreScoresBtn').hide();
+            $('#moreScores').show();
+        }
+
+        function closeScoreDialog() {
+            $("#scoreDialog").dialog("close");
+        }
+
+        function toggleScores(grp) {
+            $('.group' + grp).toggle();
+        }
+    </script>
+}

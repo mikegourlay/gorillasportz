@@ -1,0 +1,28 @@
+﻿@model GorillaGolfCommon.golf.Transaction
+
+@{
+    ViewBag.Title = "CreditPlayer";
+    Layout = "~/Areas/Admin/Views/Shared/Modal_Layout.cshtml";
+}
+
+@using (Html.BeginForm("CreditPlayer", "Admin", FormMethod.Post, new { id = "CreditPlayerForm" }))
+{
+    <div class="buttonheader headerBanner">
+        <input type="button" id="CancelBtn" value="Cancel" class="ui-button ui-corner-all" onclick="location.href = '@Url.Action("ViewPlayer", "Admin", new {playerid = Model.PlayerID})'" style="float: left" />
+        <input id="SaveBtn" type="submit" value="Save" class="ui-button ui-corner-all" style="float: right" />
+    </div>
+
+    <h4>Deposit: @ViewBag.PlayerName</h4>
+
+    @Html.ValidationSummary(true, "", new { style = "color:#e00" })
+
+    @Html.HiddenFor(x => x.PlayerID)
+    <div class="form-group">
+        @Html.LabelFor(x => x.Amount, "Amount")
+        @Html.TextBoxFor(x => x.Amount, new { @class = "form-control", id = "Amount", style = "width:60px" } )
+        @Html.ValidationMessageFor(x => x.Amount, "", new { style = "color:#e00" })
+
+    </div>
+}
+
+

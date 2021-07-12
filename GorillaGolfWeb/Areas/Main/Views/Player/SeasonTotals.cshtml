@@ -1,0 +1,51 @@
+﻿@using System.Net.Configuration
+@using GorillaGolfCommon.golf
+@using GorillaGolfWeb.Areas.Main.Models
+@{
+    ViewBag.Title = "Players Overview";
+}
+@model  GorillaGolfWeb.Areas.Main.Models.ReportModel
+<div>
+    <h4>Season Totals</h4>
+</div>
+
+@using (Html.BeginForm("SeasonTotals", "Player", FormMethod.Post, new {id = "SeasonTotalsForm"}))
+{
+    <div class="form-group">
+        <label for="SeasonSelector" style="font-weight: bold">Season:</label>
+        @Html.DropDownListFor(x => x.Season, new SelectList(ViewBag.SeasonList, "SeasonID", "SeasonName", Model.Season),
+            new {id = "SeasonSelector", @class = "form-control", onchange = "this.form.submit();", style="display:inline-block;width:200px" })
+    </div>
+    <div class="form-group">
+        <label for="ReportSelector" style="font-weight: bold">Report: </label>
+        @Html.DropDownListFor(x => x.ReportType, Model.ReportTypeList, new {id = "ReportSelector", @class = "form-control", onchange = "this.form.submit();", style = "display:inline-block;width:220px"})
+    </div>
+}
+
+@{
+    if (Model.Legend != null && Model.Legend.Count > 0)
+    {
+    <ul>
+        @foreach (string msg in Model.Legend)
+        {
+        <li>@Html.Raw(msg)</li>
+        }
+    </ul>
+    }
+}
+
+<table style="">
+    @{
+        int index = 1;
+        foreach (KeyValuePair<int, string> pair in Model.Data)
+        {
+            <tr style="border-bottom: solid 1px blue">
+                <td style="padding-right:5px">@(index++))</td>
+                <td>@(ViewBag.Players[pair.Key].DisplayName) [@(ViewBag.PlayerOutingCounts[pair.Key])]</td>
+                <td style="text-align: right; padding-left: 20px">@pair.Value</td>
+            </tr>
+        }
+    }
+</table>
+<br/>
+<i>[n] by name indicates number of outings</i>

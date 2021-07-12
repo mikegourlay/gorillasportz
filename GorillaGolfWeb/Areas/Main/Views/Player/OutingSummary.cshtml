@@ -1,0 +1,148 @@
+@using GorillaGolfCommon.core
+@using GorillaGolfCommon.golf
+@model GorillaGolfWeb.Areas.Main.Models.PlayerSummaryModel
+@{
+    ViewBag.Title = "Outing Summary";
+}
+
+<div>
+    <h4>Player Summary</h4>
+
+    @using (Html.BeginForm("OutingSummary", "Player", FormMethod.Post, new { id = "PlayerSummaryForm" }))
+    {
+        <div class="form-group">
+            <label for="SeasonSelector" style="font-weight: bold">Season:</label>
+            @Html.DropDownListFor(x => x.Season, new SelectList(ViewBag.SeasonList, "SeasonID", "SeasonName", Model.Season),
+                new {id = "SeasonSelector", @class = "form-control", onchange = "this.form.submit();", style="display:inline-block;width:200px" })
+        </div>
+        <div class="form-group">
+            <label for="PlayerSelector" style="font-weight: bold">Player: </label>
+            @Html.DropDownListFor(x => x.PlayerID, new SelectList(ViewBag.PlayerSelectList, "PlayerID", "DisplayName", Model.PlayerID),
+                new {id = "PlayerSelector", @class = "form-control", onchange = "this.form.submit();", style="display:inline-block;width:200px" })
+        </div>
+        <br/>
+
+        if (Model.Outings.Count == 0)
+        {
+            <i>There are no completed Outings yet.</i>
+        }
+        foreach (Outing outing in Model.Outings)
+        {
+            <div class="listitem" onclick="location.href = '@Url.Action("ViewOuting", "Player", new {outingID = outing.OutingID})'">
+                <b>@outing.Course.Name</b>
+                @if (outing.Settled) {<span>&nbsp;-&nbsp;</span><span style="color: white; background-color: #0a0;padding:2px 5px">$</span>}
+                @if (outing.NoFlipSkins) {<span style="font-style:italic">&nbsp;&nbsp;-&nbsp;No Flip Skins</span>}
+                <br />
+                @outing.OutingDate.ToShortDateString() &nbsp;&nbsp;
+
+                <br />
+                @{
+                    PlayerOuting p = (outing.GroupList.SelectMany(x => x.PlayerList)).SingleOrDefault(y => y.Player.PlayerID == Model.PlayerID);
+                    if (p == null)
+                    {
+                        <i>Did not play</i>
+                    }
+                    else
+                    {
+                        <span>Gross:</span>
+                        <span class="grossdisplay summarydisplay">@p.GrossScore</span>
+                        <span> Net:</span>
+                        <span class="netdisplay summarydisplay">@(p.NetScore(outing.Course).HasValue ? p.NetScore(outing.Course).ToString() : "-")</span>
+                        <span> HICS:</span>
+                        <span class="hicsdisplay summarydisplay">@p.Hics</span>
+                        <span> <img src="/Content/images/skinindicator.png" />:</span>
+                        <span class="skinsdisplay summarydisplay">@p.Skins</span>
+                        <span> <img src="/Content/images/kpindicator.png" />:</span>
+                        <span class="kpsdisplay summarydisplay">@p.KPs</span>
+                        <div id="transactions_@outing.OutingID" style="display: none;padding-top:5px">
+                            <table>
+                                <colgroup>
+                                    <col style="width:90px" />
+                                    <col style="width:55px" />
+                                </colgroup>
+                                <tr>
+                                    <td>HICS:&nbsp;</td>
+                                    <td style="text-align: right">
+                                        @if (Model.TransactionDictionary.ContainsKey(outing.OutingID))
+                                        {
+                                            @(Model.TransactionDictionary[outing.OutingID].Where(x => (x.TxType == TxTypes.HIC_CREDIT || x.TxType == TxTypes.HIC_DEBIT)).Sum(y => y.Amount).Currency())
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>KPs:&nbsp;</td>
+                                    <td style="text-align: right">
+                                        @if (Model.TransactionDictionary.ContainsKey(outing.OutingID))
+                                        {
+                                            @(Model.TransactionDictionary[outing.OutingID].Where(x => (x.TxType == TxTypes.KP_CREDIT || x.TxType == TxTypes.KP_DEBIT)).Sum(y => y.Amount).Currency())
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Skins:&nbsp;</td>
+                                    <td style="text-align: right">
+                                        @if (Model.TransactionDictionary.ContainsKey(outing.OutingID))
+                                        {
+                                            @(Model.TransactionDictionary[outing.OutingID].Where(x => (x.TxType == TxTypes.SKIN_CREDIT || x.TxType == TxTypes.SKIN_DEBIT)).Sum(y => y.Amount).Currency())
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Low Net:&nbsp;</td>
+                                    <td style="text-align: right">
+                                        @if (Model.TransactionDictionary.ContainsKey(outing.OutingID))
+                                        {
+                                            @(Model.TransactionDictionary[outing.OutingID].Where(x => (x.TxType == TxTypes.LOW_NET_CREDIT || x.TxType == TxTypes.LOW_NET_DEBIT)).Sum(y => y.Amount).Currency())
+                                        }
+                                    </td>
+                                </tr>
+                                <tr><td></td><td style="text-align: right">======</td></tr>
+                            </table>
+                        </div>
+                        <div style="padding-top: 5px">
+                            <table>
+                                <colgroup>
+                                    <col style="width:90px" />
+                                    <col style="width:55px" />
+                                </colgroup>
+                                <tr>
+                                    <td>
+                                        <input id="balance_@outing.OutingID" type="button" class="ui-button ui-corner-all collapsed-button balancebutton" value="Winnings" />
+                                    </td>
+                                    <td style="text-align: right; font-weight: bold">@Model.FormattedWinnings(outing.OutingID)</td>
+                                </tr>
+                            </table>
+
+
+                        </div>
+                    }
+                }
+            </div>
+        }
+    }
+</div>
+
+@section MyScripts {
+    <script>
+
+        $('.balancebutton').on('click', function(e) {
+            var btn = $(e.target);
+            var outingid = e.target.id.split('_')[1];
+            var txdiv = $('#transactions_' + outingid);
+
+            if (btn.hasClass("collapsed-button")) {
+                btn.removeClass("collapsed-button");
+                btn.addClass("expanded-up-button");
+            } else {
+                btn.removeClass("expanded-up-button");
+                btn.addClass("collapsed-button");
+            }
+            txdiv.slideToggle(400);
+            e.stopPropagation();
+
+            
+        });
+
+        
+    </script>
+}

@@ -1,0 +1,208 @@
+﻿@using GorillaGolfCommon.golf
+@using GorillaGolfCommon.core
+@model GorillaGolfCommon.golf.Outing
+
+@{
+    ViewBag.Title = "OutingView";
+    Layout = "~/Areas/Admin/Views/Shared/Modal_Layout.cshtml";
+}
+
+<div class="buttonheader headerBanner">
+    <table style="width: 100%">
+        <tr>
+            <td style="text-align: left">
+                <input id="BackBtn" type="button" value="Back" class="ui-button ui-corner-all" onclick="location.href = '@Url.Action("OutingSummary", "Player")'" />
+            </td>
+        </tr>
+    </table>
+</div>
+
+<h4>Outing Summary</h4>
+
+<b>@Model.Course.Name</b>
+@if (Model.NoFlipSkins){<span style="font-style:italic">&nbsp;&nbsp;-&nbsp;No Flip Skins</span>}
+
+<br />
+@Model.OutingDate.ToShortDateString()
+<br />
+@if (Model.Settled)
+{<span style="color: white; background-color: #0a0;padding:2px 5px">$</span><span style="color: black">&nbsp;-&nbsp;Money has been settled for this outing.</span>}
+else
+{<span style="color: #e00">Money has not been settled for this outing.</span>}
+<br />
+<br />
+<b>Big $ Winner:</b> @(string.Join(", ", ViewBag.MoneyWinners))
+<br />
+<b>Big $ Loser:</b> @(string.Join(", ", ViewBag.MoneyLosers))
+<br />
+<b>KPs:</b> @(string.Join(", ", Model.KPWinners))
+<br />
+<b>Skin Winners:</b> @(string.Join(", ", Model.SkinWinners))
+<br />
+<b>HIC Whore:</b> @(string.Join(", ", Model.HicWinners))
+<br />
+<b>Low HIC:</b> @(string.Join(", ", Model.HicLosers))
+<br />
+<b>Low Gross:</b> @(string.Join(", ", Model.LowGrossers))
+<br />
+<b>Sandbagger:</b> @(string.Join(", ", Model.LowNetWinners))
+<br />
+
+@for (var g = 0; g < Model.GroupList.Count; g++)
+{
+    <div style="float: left; margin-right:30px">
+        <table style="margin-top:60px">
+            <tr>
+                <td class="groupDisplay">
+                    <input id="groubbtn@(g)" type="button" class="ui-button ui-corner-all collapsed-button" value="Grp @(g + 1)" onclick="toggleScores(this.id, @(g))" />
+                </td>
+                @foreach (var player in Model.GroupList[g].PlayerList)
+                {
+                    <th class="playerLabel">
+                        <div><span>@player.Player.ShortName</span></div>
+                    </th>
+                }
+            </tr>
+            @for (int h = 0; h < Model.Course.HoleList.Count; h++)
+            {
+                <tr class=" group@(g)" style="display:none">
+                    <td class="holedisplay">
+                        @Model.Course.HoleList[h].HoleNumber
+                        <div class="pardisplay">@Model.Course.HoleList[h].Par</div>
+                    </td>
+                    @foreach (var player in Model.GroupList[g].PlayerList)
+                    {
+                        <td class="scoredisplay">
+                            <div class='@(player.Scores[h].Skin ? "skindisplay" : "noskindisplay")'></div>
+
+                            @(player.Scores[h].Strokes == 0 ? "" : player.Scores[h].Strokes.ToString())
+
+                            <div class='@(player.Scores[h].Hics == 1
+                                              ? "onehic"
+                                              : @player.Scores[h].Hics == 2
+                                                  ? "twohic"
+                                                  : @player.Scores[h].Hics == 3
+                                                      ? "threehic"
+                                                      : "nohic")'></div>
+                            <div style="clear: both"></div>
+
+                            <div class='@(player.Scores[h].KP ? "kpdisplay" : "")'></div>
+                        </td>
+                    }
+                </tr>
+            }
+
+            <tr>
+                <td class="specialsdisplay">Gross</td>
+                @foreach (var player in Model.GroupList[g].PlayerList)
+                {
+                    <td class="grossdisplay">
+                        @(player.GrossScore != null ? player.GrossScore.ToString() : "--")
+                    </td>
+                }
+            </tr>
+            <tr>
+                <td class="specialsdisplay">C.H.</td>
+                @foreach (var player in Model.GroupList[g].PlayerList)
+                {
+                    <td class="ch_display">
+                        @(player.CourseHandicap(Model.Course) != null ? player.CourseHandicap(Model.Course).ToString() : "--")
+                    </td>
+                }
+            </tr>
+            <tr>
+                <td class="specialsdisplay">H.I.</td>
+                @foreach (var player in Model.GroupList[g].PlayerList)
+                {
+                    <td class="ch_display">
+                        @(player.CourseHIndex(Model.Course) != null ? ((decimal)(player.CourseHIndex(Model.Course))).ToString("0.0") : "--")
+                    </td>
+                }
+            </tr>
+            <tr>
+                <td class="specialsdisplay">Net</td>
+                @foreach (var player in Model.GroupList[g].PlayerList)
+                {
+                    <td class="netdisplay">
+                        @(player.NetScore(Model.Course) != null ? player.NetScore(Model.Course).ToString() : "--")
+                    </td>
+                }
+            </tr>
+            <tr>
+                <td class="specialsdisplay">HICS</td>
+                @foreach (var player in Model.GroupList[g].PlayerList)
+                {
+                    <td class="hicsdisplay">
+                        @(player.Hics)
+                    </td>
+                }
+            </tr>
+            <tr>
+                <td class="specialsdisplay"><img src="/Content/images/skinindicator-med.png" /></td>
+                @foreach (var player in Model.GroupList[g].PlayerList)
+                {
+                    <td class="skinsdisplay">
+                        @(player.Skins)
+                    </td>
+                }
+            </tr>
+            <tr>
+                <td class="specialsdisplay"><img src="/Content/images/kpindicator-med.png" width="15" height="15" /></td>
+                @foreach (var player in Model.GroupList[g].PlayerList)
+                {
+                    <td class="kpsdisplay">
+                        @(player.KPs)
+                    </td>
+                }
+            </tr>
+            <tr>
+                <td class="specialsdisplay">$</td>
+                @foreach (var player in Model.GroupList[g].PlayerList)
+                {
+                    <td class="winningsdisplay">
+                        @(((decimal)ViewBag.PlayerTransactionSummary[player.Player.PlayerID].TotalAmount).Currency())
+                    </td>
+                }
+            </tr>
+
+        </table>
+    </div>
+}
+
+<div style="clear: both; padding-top: 20px">
+
+    <div class="form-group">
+        @Html.Label("Skin Value:")
+        @String.Format("${0:0.##}", Model.SkinValue)
+    </div>
+    <div class="form-group">
+        @Html.Label("HIC Value:")
+        @String.Format("${0:0.##}", Model.HicValue)
+    </div>
+    <div class="form-group">
+        @Html.Label("Low Net Value:")
+        @String.Format("${0:0.##}", Model.LowNetValue)
+    </div>
+    <div class="form-group">
+        @Html.Label("KP Value:")
+        @String.Format("${0:0.##}", Model.KPValue)
+    </div>
+</div>
+
+@section MyScripts {
+    <script>
+        function toggleScores(id, grp) {
+            $('.group' + grp).toggle();
+
+            var btn = $('#' + id);
+            if (btn.hasClass("collapsed-button")) {
+                btn.removeClass("collapsed-button");
+                btn.addClass("expanded-down-button");
+            } else {
+                btn.removeClass("expanded-down-button");
+                btn.addClass("collapsed-button");
+            }
+        }
+    </script>
+}
+

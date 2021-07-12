@@ -1,0 +1,105 @@
+﻿@using GorillaGolfCommon.core
+@using GorillaGolfCommon.golf
+@model GorillaGolfCommon.golf.Player
+
+@{
+    ViewBag.Title = "PlayerView";
+    Layout = "~/Areas/Admin/Views/Shared/Modal_Layout.cshtml";
+}
+
+<div class="buttonheader headerBanner">
+    <input id="BackBtn" type="button" value="Back" class="ui-button ui-corner-all" style="float:left" onclick="location.href='@Url.Action("PlayerList", "Admin")'" />
+    <input type="button" id="EditPlayerBtn" value="Edit" class="ui-button ui-corner-all" onclick="location.href = '@Url.Action("EditPlayer", "Admin", new {playerid = Model.PlayerID})'" style="float:right" />
+    <input type="button" id="CreditPlayerBtn" value="+ $" class="ui-button ui-corner-all" onclick="location.href='@Url.Action("CreditPlayer", "Admin", new {playerid = Model.PlayerID})'" style="float:right" />
+    <input type="button" id="DebitPlayerBtn" value="- $" class="ui-button ui-corner-all" onclick="location.href='@Url.Action("DebitPlayer", "Admin", new {playerid = Model.PlayerID})'" style="float:right" />
+
+</div>
+<h4>Player Info</h4>
+<div style="float: left;margin-right:10px">
+    <table>
+        <colgroup>
+            <col style="width:80px"/>
+        </colgroup>
+        <tr>
+            <td style="font-weight: bold">First Name:</td>
+            <td>@Model.FirstName</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold">Last Name:</td>
+            <td>@Model.LastName</td>
+        </tr>
+        <tr>
+            <td  style="font-weight: bold">Phone:</td>
+            <td>@Model.FormattedPhone</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold" >Email:</td>
+            <td>@Model.Email</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold" >Username:</td>
+            <td>@Model.UserName</td>
+        </tr>
+
+    </table>
+</div>
+<div style="float: left">
+    <table>
+        <colgroup>
+            <col style="width:80px" />
+        </colgroup>
+        <tr>
+            <td style="font-weight: bold">Nickname:</td>
+            <td>@Model.NickName</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold">GHIN:</td>
+            <td>@Model.GHIN</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold">HIndex:</td>
+            <td>@Model.HIndex.ToString()</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold">User Type:</td>
+            <td>@Model.UserType.ToString()</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold">Status:</td>
+            <td>@Model.Status.ToString()</td>
+        </tr>
+    </table>
+</div>
+<div style="clear:both"></div>
+<br/>
+<h4>
+    Current Balance:
+    @if (Model.Balance < 0)
+    {
+        <span style="background-color: #e00; color: white;padding:2px 5px">@Model.FormattedBalance</span>
+    }
+    else
+    {
+        <span style="background-color: black; color:white;padding:2px 5px">@Model.FormattedBalance</span>
+    }
+</h4>
+<br/>
+
+<h4>Deposits &amp; Withdrawals</h4>
+<table style="width: 100%">
+    @foreach (Transaction t in Model.Transactions)
+    {
+        if (t.TxType != TxTypes.DEPOSIT && t.TxType != TxTypes.WITHDRAWAL) { continue; }
+        <tr>
+            <td>@t.TxDateUTC.ConvertUTCToTZ("PT").ToString("MM/dd/yy hh:mmtt")</td>
+            <td>@t.TxType @(t.AssociatedPlayer != null ? " (" + t.AssociatedPlayer.ShortName + ")" : "")</td>
+            <td style="text-align: right">@t.FormattedAmount</td>
+        </tr>
+    }
+</table>
+
+@if (Player.CanBeRemoved(Model.PlayerID))
+{
+    <input type="button" id="DeletePlayerBtn" value="Delete Player" class="ui-button ui-corner-all"
+           onclick="if (confirm('Okay to remove this player?')) {location.href = '@Url.Action("RemovePlayer", "Admin", new {playerid = Model.PlayerID})'}" />
+}

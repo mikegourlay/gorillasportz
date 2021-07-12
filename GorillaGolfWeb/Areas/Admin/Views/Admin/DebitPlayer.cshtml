@@ -1,0 +1,50 @@
+﻿@using GorillaGolfCommon.core
+@using GorillaGolfWeb.Areas.Admin.Models
+@model GorillaGolfWeb.Areas.Admin.Models.DebitModel
+
+@{
+    ViewBag.Title = "DebitPlayer";
+    Layout = "~/Areas/Admin/Views/Shared/Modal_Layout.cshtml";
+}
+
+@using (Html.BeginForm("DebitPlayer", "Admin", FormMethod.Post, new { id = "DebitPlayerForm" }))
+{
+    <div class="buttonheader headerBanner">
+        <input type="button" id="CancelBtn" value="Cancel" class="ui-button ui-corner-all" onclick="location.href = '@Url.Action("ViewPlayer", "Admin", new {playerid = Model.PlayerID})'" style="float: left" />
+        <input id="SaveBtn" type="submit" value="Save" class="ui-button ui-corner-all" style="float: right" />
+    </div>
+
+    <h4>Withdrawal for @Model.PlayerName</h4>
+    <div>Current Balance: @Model.Balance.Currency()</div>
+
+    @Html.ValidationSummary(true, "", new { @class = "alert-danger" })
+
+    @Html.HiddenFor(x => x.PlayerID)
+    @Html.HiddenFor(x => x.Balance)
+    @Html.HiddenFor(x => x.PlayerName)
+
+    if (Model.Balance <= 0)
+     {
+        <label class="alert-danger">Player does not have a positive balance so no withdrawal can be made.</label>
+    }
+     else
+     {
+         <div class="form-group">
+             <br/>
+             <b>Source of Funds:</b>
+             <div style="padding-left: 20px;line-height: 2em">
+             @Html.RadioButtonFor(x => x.WithdrawalType, DebitModel.WithdrawalTypes.POOL) From Pool Money
+             <br/>
+             @Html.RadioButtonFor(x => x.WithdrawalType, DebitModel.WithdrawalTypes.PLAYER) Transfer from another player's account
+             <br/>
+                 <div style="padding-left: 20px">
+                     Crediting Player: @Html.DropDownListFor(x => x.CreditingPlayerID, Model.CreditingPlayerList, new {@class = "form-control", style = "display:inline-block;width:200px"})
+                 </div>
+             </div>
+             <br/>
+             @Html.LabelFor(x => x.Amount, "Amount")
+             @Html.TextBoxFor(x => x.Amount, new {@class = "form-control", id = "Amount", style = "width:100px;text-align:right"})
+             @Html.ValidationMessageFor(x => x.Amount, "", new {style = "color:#e00"})
+         </div>
+     }
+}

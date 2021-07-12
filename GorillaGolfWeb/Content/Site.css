@@ -1,0 +1,393 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default
+    and set font size to 16px to prevent iOS from zooming in input focus
+*/
+
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+input[type="text"], select, textarea, input[type="password"] {
+    font-size: 16px !important;
+}
+
+a
+{
+    color:#3b58a8;
+    text-decoration:none;
+}
+
+.buttonheader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    padding: 5px;
+    z-index: 100;
+}
+
+a:hover
+{
+    color:#ea9919;
+    text-decoration:none;
+}
+
+.small-button {
+    font-size: smaller !important;
+    padding: 4px 4px 2px 4px;
+}
+
+.remove-btn {
+    background: url(images/removeIcon.png) no-repeat top left;
+    display: inline-block;
+    width: 10px;
+    height: 15px;
+    text-indent: -9999px;
+}
+
+.ui-accordion-header-active {
+    background: #ededed;
+    border: solid 1px #c5c5c5;
+    color: #454545;
+}
+
+.ui-accordion-header-icon {
+    background-image: url("themes/base/images/ui-icons_555555_256x240.png") !important
+}
+
+.togglebtn {
+    background-color: #f6f6f6;
+    border: 1px solid #cccccc;
+    color: #2b2b2b;
+    text-decoration: none;
+    font-weight: normal;
+    font-size: 1.5em;
+    padding: .2em .5em;
+    vertical-align: middle;
+    text-align: center;
+    margin: auto;
+    margin-top: 5px;
+    width: 60px;
+}
+
+.strokebtn-selected {
+    background-color: blue;
+    color: white;
+}
+
+.hicbtn-selected {
+    background-color: red;
+    color: white;
+}
+
+.no-titlebar .ui-dialog-titlebar {
+    display: none;
+}
+
+.leftarrow {
+    background-image: url('/Content/images/left arrow.png') !important;
+    background-repeat: no-repeat;
+}
+
+.nohic {
+    width: 4px;
+    height: 4px;
+    padding: 0;
+    float: right;
+    position: relative;
+    top: 2px;
+    right: 2px;
+}
+
+.onehic {
+    background-image: url('/Content/images/onehic.png');
+    background-repeat: no-repeat;
+    width: 4px;
+    height: 4px;
+    padding: 0;
+    float: right;
+    position: relative;
+    top: 2px;
+    right: 2px;
+}
+
+.twohic {
+    background-image: url('/Content/images/twohic.png');
+    background-repeat: no-repeat;
+    width: 4px;
+    height: 10px;
+    padding: 0;
+    float: right;
+    position: relative;
+    top: 2px;
+    right: 2px;
+}
+
+.threehic {
+    background-image: url('/Content/images/threehic.png');
+    background-repeat: no-repeat;
+    width: 4px;
+    height: 16px;
+    padding: 0;
+    float: right;
+    position: relative;
+    top: 2px;
+    right: 2px;
+}
+
+.kpdisplay {
+    background-image: url('/Content/images/kpindicator.png');
+    width: 10px;
+    height: 10px;
+    margin-top: -9px;
+    margin-left: 1px;
+    float: left;
+    position: relative;
+    bottom: 1px;
+} 
+
+.skindisplay {
+    background-image: url('/Content/images/skinindicator.png');
+    width: 10px;
+    height: 8px;
+    margin-top: 1px;
+    margin-left: 1px;
+    float: left;
+    position: relative;
+    bottom: 1px;
+}
+
+.noskindisplay {
+    width: 10px;
+    height: 8px;
+    margin-top: 1px;
+    margin-left: 1px;
+    float: left;
+    position: relative;
+    bottom: 1px;
+}
+
+.holedisplay {
+    border-bottom: solid 1px #ccc;
+    border-right: solid 1px #ccc;
+    background-color: #eee;
+    text-align: center;
+    font-size: 1.2em;
+}
+
+.pardisplay {
+    float: right;
+    position: relative;
+    margin-top: 10px;
+    font-size: .75em;
+    width: 5px;
+    height: 8px;
+    margin-right: 2px;
+}
+
+.specialsdisplay {
+    border-bottom: solid 1px #ccc;
+    border-right: solid 1px #ccc;
+    background-color: #eee;
+    text-align: center;
+}
+
+.scoredisplay {
+    border: solid 1px #ccc;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5em
+}
+
+.ch_display {
+    border: solid 1px #ccc;
+    border-top: solid 1px #ccc;
+    text-align: center;
+    font-weight: normal;
+    font-style: italic;
+    font-size: 1em;
+    background-color: #eee;
+}
+
+.grossdisplay {
+    border: solid 1px #ccc;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5em;
+    background-color: blue;
+    color: white;
+}
+
+.netdisplay {
+    border: solid 1px #ccc;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5em;
+    background-color: #9af;
+    color: white;
+}
+
+.hicsdisplay {
+    border: solid 1px #ccc;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5em;
+    background-color: #4cd448;
+    color: white;
+}
+
+.skinsdisplay {
+    border: solid 1px #ccc;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5em;
+    background-color: #f5c901;
+    color: white;
+}
+
+.kpsdisplay {
+    border: solid 1px #ccc;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5em;
+    background-color: #de3348;
+    color: white;
+}
+
+.winningsdisplay {
+    border: solid 1px #ccc;
+    text-align: right;
+    font-size: 1em;
+    background-color: white;
+    color: black;
+}
+
+.summarydisplay {
+    padding: 1px 2px;
+    font-size: 1em;
+}
+
+.playerLabel {
+    height: 45px;
+    white-space: nowrap;
+}
+
+.playerLabel div {
+    transform: rotate(-65deg) translate(15px,20px);
+    width: 50px;
+}
+
+.playerLabel span {
+    border-bottom: solid 1px #ccc;
+    padding: 5px 10px;
+}
+
+.groupDisplay {
+    border-bottom: solid 1px #ccc;
+    text-align: center;
+    line-height: 1em;
+}
+
+.kpcheck {
+    -webkit-appearance: none;
+    width: 30px;
+    height: 30px;
+    background: #f6f6f6;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.kpcheck:checked {
+    background-image: url('/Content/images/kpindicator.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 50%;
+}
+
+.carryovercheck {
+    -webkit-appearance: none;
+    width: 30px;
+    height: 30px;
+    background: #f6f6f6;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.carryovercheck:checked {
+    background-image: url('/Content/images/skinindicator.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 50%;
+}
+
+.listitem {
+    width: 100%;
+    display: block;
+    margin-bottom: 3px;
+    border: solid 1px #99aaff;
+    border-radius: 4px;
+    padding: 5px 10px;
+    vertical-align: middle;
+    background-image: url('/Content/images/rightnav.png');
+    background-repeat: no-repeat;
+    background-position-x: right;
+    background-position-y: center;
+}
+
+.headerBanner {
+    background-color: #3956a6; /* will be used for IE9 and below */
+    background-image: linear-gradient(to bottom, #172d6c, #5274d0); /* will be used for IE10 and above */
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #172d6c), color-stop(100% #5274d0));
+    background-image: -webkit-linear-gradient(top, #172d6c 0, #5274d0 100%);
+    background-image: -moz-linear-gradient(top, #172d6c 0, #5274d0 100%);
+    background-image: -o-linear-gradient(top, #172d6c 0, #5274d0 100%);
+}
+
+.navitem a {
+    color: white !important;
+}
+
+.collapsed-button, .collapsed-button:hover, .collapsed-button:focus {
+    background-image: url('/Content/images/collapsed.png');
+    background-repeat: no-repeat;
+    background-position-x: right;
+    background-position-y: center;
+    padding: 2px 14px 2px 8px;
+}
+
+.expanded-up-button, .expanded-up-button:hover, .expanded-up-button:focus {
+    background-image: url('/Content/images/expanded_up.png');
+    background-repeat: no-repeat;
+    background-position-x: right;
+    background-position-y: center;
+    padding: 2px 14px 2px 8px;
+}
+
+    .expanded-down-button, .expanded-down-button:hover, .expanded-down-button:focus {
+        background-image: url('/Content/images/expanded.png');
+        background-repeat: no-repeat;
+        background-position-x: right;
+        background-position-y: center;
+        padding: 2px 14px 2px 8px;
+    }
+

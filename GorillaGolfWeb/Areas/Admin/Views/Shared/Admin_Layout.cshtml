@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="apple-touch-icon" href="/Content/images/gorilla_large.png" />
+    <link rel="apple-touch-startup-image" href="/Content/images/gorillagolfsplash750x1334.png" />
+
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top headerBanner">
+        <div class="container">
+            <div class="navbar-header">
+                <img src="/Content/images/gorilla_40x40.png" style="padding: 8px 4px 0px 6px" />
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse ">
+                <ul class="nav navbar-nav" style="font-size:18px">
+                    <li class="navitem">@Html.ActionLink("Outing List", "OutingList", "Admin")</li>
+                    <li class="navitem">@Html.ActionLink("Course List", "CourseList", "Admin")</li>
+                    <li class="navitem">@Html.ActionLink("Player List", "PlayerList", "Admin")</li>
+                    <li class="navitem">@Html.ActionLink("Exit Admin", "OutingSummary", "Player", new { Area = "Main" }, null)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+       
+    </div>
+    
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryajax")
+    @RenderSection("scripts", required: false)
+    @RenderSection("MyScripts", required: false)
+</body>
+</html>

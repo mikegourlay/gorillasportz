@@ -1,0 +1,34 @@
+﻿@model GorillaGolfWeb.Areas.Main.Models.LoginModel
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/Modal_Layout.cshtml";
+}
+
+<div>
+    @if (ViewBag.Message != null)
+    {
+        <span class="alert-danger">@ViewBag.Message</span>
+    }
+    @using (Html.BeginForm("Login", "Login", FormMethod.Post))
+    {
+        @Html.ValidationSummary(true, "", new { style = "color:#e00" })
+
+        <div class="form-group">
+            @Html.LabelFor(x => x.UserName, "Username")
+            @Html.TextBoxFor(x => x.UserName, new { @class = "form-control", autocapitalize = "none" })
+            @Html.ValidationMessageFor(x => x.UserName, "", new { style = "color:#e00" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.Password, "Password")
+            @Html.PasswordFor(x => x.Password, new { @class = "form-control" })
+            @Html.ValidationMessageFor(x => x.Password, "", new {style = "color:#e00"})
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.RememberMe, "Remember Me")
+            @Html.CheckBoxFor(x => x.RememberMe)
+        </div>
+        <div class="form-group">
+            <input type="submit" class="ui-button ui-corner-all" value="Login" />
+        </div>
+    }
+</div>

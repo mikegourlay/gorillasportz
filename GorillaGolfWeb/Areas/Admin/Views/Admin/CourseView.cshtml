@@ -1,0 +1,104 @@
+﻿@using GorillaGolfCommon.golf
+@model GorillaGolfCommon.golf.Course
+
+@{
+    ViewBag.Title = "CourseView";
+    Layout = "~/Areas/Admin/Views/Shared/Modal_Layout.cshtml";
+}
+
+<div class="buttonheader headerBanner">
+    <input id="BackBtn" type="button" value="Back" class="ui-button ui-corner-all" style="float:left" onclick="location.href='@Url.Action("CourseList", "Admin")'" />
+    <input type="button" id="EditCourseBtn" value="Edit" class="ui-button ui-corner-all" onclick="location.href = '@Url.Action("EditCourse", "Admin", new {courseid = Model.CourseID})'" style="float:right" />
+</div>
+
+<div class="form-group">
+    @Html.Label("Course Name:")
+    @Model.Name
+</div>
+<div class="form-group">
+    @Html.Label("Slope:")
+    @Model.Slope.ToString()
+</div>
+<div class="form-group">
+    @Html.Label("Rating:")
+    @Model.Rating.ToString()
+</div>
+
+<div id="frontnineDiv" style="clear: both; float: left;margin-top: 10px; border: solid 1px #ccc; padding: 10px" class="ui-corner-all">
+
+    <table cellpadding="5">
+        <tr>
+            <td style="text-align: center"><label>Hole</label></td>
+            <td style="text-align: center"><label>Par</label></td>
+            <td style="text-align: center"><label>HC</label></td>
+        </tr>
+
+        @foreach (Hole hole in Model.HoleList.Take(9))
+        {
+            <tr>
+                @if (hole.Par == 0)
+                {
+                    <td style="text-align: center; color:#ccc">
+                        <b>@hole.HoleNumber</b>
+                    </td>
+                }
+                else
+                {
+                    <td style="text-align: center">
+                        <b>@hole.HoleNumber</b>
+                    </td>
+                }
+                <td style="text-align: center">
+                    @(hole.Par == 0 ? "-" : hole.Par.ToString())
+                </td>
+                <td style="text-align: center">
+                    @(hole.Handicap.HasValue ? ((int)(hole.Handicap)).ToString() : "-")
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+<div id="backnineDiv" style="float: left;margin-top: 10px; margin-left: 10px; border: solid 1px #ccc; padding: 10px" class="ui-corner-all">
+
+
+    <table cellpadding="5">
+        <tr>
+            <td style="text-align: center"><label>Hole</label></td>
+            <td style="text-align: center"><label>Par</label></td>
+            <td style="text-align: center"><label>HC</label></td>
+        </tr>
+        @foreach (Hole hole in Model.HoleList.Skip(9).Take(9))
+        {
+        <tr>
+            @if (hole.Par == 0)
+            {
+                <td style="text-align: center; color: #ccc">
+                    <b>@hole.HoleNumber</b>
+                </td>
+            }
+            else
+            {
+                <td style="text-align: center">
+                    <b>@hole.HoleNumber</b>
+                </td>
+            }
+            <td style="text-align: center">
+                @(hole.Par == 0 ? "-" : hole.Par.ToString())
+            </td>
+            <td style="text-align: center">
+                @(hole.Handicap.HasValue ? ((int)(hole.Handicap)).ToString() : "-")
+            </td>
+        </tr>
+        }
+    </table>
+</div>
+
+
+@if (Course.CanCourseBeRemoved(Model.CourseID))
+{
+<div style="clear: both;padding-top:20px">
+    <input type="button" id="DeleteCourseBtn" value="Delete Course" class="ui-button ui-corner-all"
+           onclick="if (confirm('Okay to remove this course?')) {location.href = '@Url.Action("RemoveCourse", "Admin", new {courseid = Model.CourseID})'}" />
+</div>
+}
+

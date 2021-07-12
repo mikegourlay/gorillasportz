@@ -1,0 +1,21 @@
+﻿@using GorillaGolfCommon.golf
+@{
+    ViewBag.Title = "Admin Course List";
+}
+<div>
+    <h4>Course List</h4>
+    <br />
+    <button id="AddCourseBtn" class="ui-button ui-corner-all" onclick="location.href='@Url.Action("AddCourse", "Admin")'">Add Course</button>
+    <br />
+    <br />
+    @Html.ValidationSummary(true, "", new { style = "color:#a00" })
+    
+    @foreach (Course course in Model)
+    {
+        <div class="listitem" onclick="location.href='@Url.Action("ViewCourse", "Admin", new {courseID = course.CourseID})'" >
+            <b>@course.Name</b>
+            &nbsp;&nbsp;(Slope: @course.Slope / Rating: @course.Rating)
+        </div>
+    }
+</div>
+

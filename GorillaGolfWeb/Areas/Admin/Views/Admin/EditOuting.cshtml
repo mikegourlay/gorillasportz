@@ -1,0 +1,75 @@
+﻿@{ Layout = "~/Areas/Admin/Views/Shared/Modal_Layout.cshtml";}
+@using System.Web.Mvc.Html
+@using GorillaGolfCommon.golf
+@model Outing
+@{
+    ViewBag.Title = "Edit Outing";
+}
+
+@using (Html.BeginForm("EditOuting", "Admin", FormMethod.Post, new { id = "EditOutingForm" }))
+{
+    <div class="buttonheader headerBanner">
+        <input type="button" id="CancelOutingBtn" value="Cancel" class="ui-button ui-corner-all" onclick="location.href='@Url.Action("ViewOuting", "Admin", new { outingid = Model.OutingID })'" style="float:left" />
+        <input id="SaveOutingBtn" type="submit" value="Save" class="ui-button ui-corner-all" style="float: right"/>
+
+    </div>
+    @Html.HiddenFor(x => x.OutingID)
+    @Html.HiddenFor(x => x.Committed)
+    @Html.HiddenFor(x => x.Season)
+    if (Model.OutingID == 0)
+     {
+         <div style="background-color: red; color:white">Make sure to update Handicaps first!</div>
+         <br/><br/>
+     }
+    <div class="form-group">
+        <label for="CourseSelector">Course</label>
+        @Html.DropDownListFor(x => x.CourseID, new SelectList(ViewBag.CourseList, "CourseID", "Name"), new { id = "CourseSelector", @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.OutingDate, "Date")
+        @Html.EditorFor(x => x.OutingDate)
+    </div>
+    <div>
+
+        @for (var g = 0; g < Model.GroupList.Count; g++)
+        {
+            @Html.HiddenFor(x => x.GroupList[g].GroupID)
+            <div class="form-group">
+                @Html.Label("Group:" + (g + 1))
+                @for (var i = 0; i < Model.GroupList[g].PlayerList.Count; i++)
+                {
+                    @Html.DropDownListFor(x => x.GroupList[g].PlayerList[i].Player.PlayerID, new SelectList(ViewBag.PlayerSelectList, "PlayerID", "DisplayName", Model.GroupList[g].PlayerList[i].Player.PlayerID), new { id = "GroupList[" + g + "].PlayerList[" + i + "]", @class = "form-control" })
+                }
+            </div>
+        }
+
+        <input id="AddGroupBtn" type="submit" value="Add Group" formaction="AddGroup" formmethod="post" class="ui-button ui-corner-all" />
+
+    </div>
+    <div style="padding-top: 20px">
+        <div class="form-group">
+            @Html.LabelFor(x => x.NoFlipSkins, "No Flip Skin Calculation")
+            @Html.CheckBoxFor(x => x.NoFlipSkins, new { @class = "form-control"})
+        </div>
+        <div class="form-group" style="float: left; width: 50%">
+            @Html.LabelFor(x => x.SkinValue, "Skin Value") (in $)
+            @Html.TextBoxFor(x => x.SkinValue, new { @class = "form-control", style = "width:60px" })
+        </div>
+        <div class="form-group" style="float: left; width: 50%">
+            @Html.LabelFor(x => x.HicValue, "Hic Value") (in $)
+            @Html.TextBoxFor(x => x.HicValue, new { @class = "form-control", style = "width:60px" })
+        </div>
+        <br />
+        <div class="form-group" style="float: left; width: 50%">
+            @Html.LabelFor(x => x.LowNetValue, "Low Net Value") (in $)
+            @Html.TextBoxFor(x => x.LowNetValue, new { @class = "form-control", style = "width:60px" })
+        </div>
+        <div class="form-group" style="float: left; width: 50%">
+            @Html.LabelFor(x => x.KPValue, "KP Value") (in $)
+            @Html.TextBoxFor(x => x.KPValue, new { @class = "form-control", style = "width:60px" })
+        </div>
+    </div>
+    <input type="submit" style="position: absolute; top:-1000px" tab-index="-1" />
+    
+}
+

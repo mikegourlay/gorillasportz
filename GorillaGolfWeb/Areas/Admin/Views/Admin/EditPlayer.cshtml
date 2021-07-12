@@ -1,0 +1,82 @@
+﻿@using GorillaGolfCommon.golf
+@model GorillaGolfCommon.golf.Player
+
+@{
+    ViewBag.Title = "EditPlayer";
+    Layout = "~/Areas/Admin/Views/Shared/Modal_Layout.cshtml";
+}
+
+@using (Html.BeginForm("EditPlayer", "Admin", FormMethod.Post, new { id = "EditPlayerForm" }))
+{
+    <div class="buttonheader headerBanner">
+        <input type="button" id="CancelPlayerBtn" value="Cancel" class="ui-button ui-corner-all" onclick="location.href='@Url.Action("ViewPlayer", "Admin", new {playerid = Model.PlayerID})'" style="float:left" />
+        <input id="SavePlayerBtn" type="submit" value="Save" class="ui-button ui-corner-all" style="float: right" />
+    </div>
+
+    @Html.HiddenFor(x => x.PlayerID)
+    <div class="form-group">
+        @Html.LabelFor(x => x.FirstName, "First Name")
+        @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", id = "FirstName" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.LastName, "Last Name")
+        @Html.TextBoxFor(x => x.LastName, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.UserName, "Username")
+        @Html.TextBoxFor(x => x.UserName, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.NickName, "Nick Name")
+        @Html.TextBoxFor(x => x.NickName, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.Password, "Password")
+        @Html.PasswordFor(x => x.Password, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.Password, "Confirm Password")
+        @Html.Password("ConfirmPassword", Model.Password, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.Email, "Email")
+        @Html.TextBoxFor(x => x.Email, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.TextNumber, "Phone")
+        @Html.TextBoxFor(x => x.TextNumber, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(x => x.GHIN, "GHIN")
+        @Html.TextBoxFor(x => x.GHIN, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.HIndex, "HIndex")
+        @Html.TextBoxFor(x => x.HIndex, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.UserType, "User Type")
+        <br />
+        <div style="height: 36px;padding-top:5px">
+            @foreach (var uType in Enum.GetNames(typeof(UserTypes)))
+            {
+
+                @Html.RadioButtonFor(x => x.UserType, uType, new { id = uType, style = "margin-left:10px" })
+                @Html.Label(uType, new { style = "margin-left:5px; vertical-align:middle" })
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(x => x.Status, "Status")
+        <br />
+        <div style="height: 36px;padding-top:5px">
+            @foreach (var uStatus in Enum.GetNames(typeof(UserStatus)))
+            {
+                @Html.RadioButtonFor(x => x.Status, uStatus, new { id = uStatus, style = "margin-left:10px" })
+                @Html.Label(uStatus, new { style = "margin-left:5px; vertical-align:middle" })
+            }
+        </div>
+    </div>
+}
+

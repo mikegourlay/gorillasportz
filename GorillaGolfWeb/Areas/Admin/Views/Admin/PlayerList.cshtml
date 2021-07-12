@@ -1,0 +1,48 @@
+﻿@using GorillaGolfCommon.golf
+
+@{
+    ViewBag.Title = "Admin Player List";
+}
+<div>
+    <h4>Player List</h4>
+    <br />
+    @Html.ValidationSummary(true, "", new { style = "color:#a00" })
+    <button id="AddPlayerBtn" class="ui-button ui-corner-all" onclick="location.href='@Url.Action("AddPlayer", "Admin")'">Add Player</button>
+    <button id="UpdateHIndexBtn" class="ui-button ui-corner-all" onclick="openHIndexNotification();location.href='@Url.Action("UpdatePlayersHIndex", "Admin")';">Update Handicaps</button>
+    <br /><br />
+
+    @foreach (Player p in Model)
+    {
+        <div class="listitem" onclick="location.href='@Url.Action("ViewPlayer", "Admin", new {playerID = p.PlayerID})'">
+            <b>@p.DisplayName</b> - [@(p.HIndex.HasValue ? ((decimal)(p.HIndex)).ToString("0.0") : "--")]
+            @if (ViewBag.HIndexUpdateMsgs != null && ViewBag.HIndexUpdateMsgs.ContainsKey(p.PlayerID))
+            {
+                <span style="margin-left: 10px;color:blue">@ViewBag.HIndexUpdateMsgs[p.PlayerID]</span>
+            }
+            @if (ViewBag.HIndexUpdateErrors != null && ViewBag.HIndexUpdateErrors.ContainsKey(p.PlayerID))
+            {
+                <span style="margin-left: 10px;color:red">@ViewBag.HIndexUpdateErrors[p.PlayerID]</span>
+            }
+        </div>
+    }
+</div>
+
+<div id="HIndexUpdateNotificationDialog">
+    Updating Handicap Indexes.  This may take a moment...
+</div>
+
+@section MyScripts {
+    <script>
+        $("#HIndexUpdateNotificationDialog").dialog({
+            autoOpen: false,
+            modal: true,
+            width: "300px",
+            dialogClass: "no-titlebar"
+        });
+
+        function openHIndexNotification() {
+            // Open dialog
+            $("#HIndexUpdateNotificationDialog").dialog("open");
+        }
+    </script>
+}

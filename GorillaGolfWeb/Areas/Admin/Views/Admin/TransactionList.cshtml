@@ -1,0 +1,23 @@
+﻿@using GorillaGolfCommon.core
+@using GorillaGolfCommon.golf
+@model List<GorillaGolfCommon.golf.Transaction>
+@{
+    ViewBag.Title = "TransactionList";
+    Layout = "~/Areas/Admin/Views/Shared/Admin_Layout.cshtml";
+}
+
+<h4>Deposit and Credit Transactions</h4>
+
+Current Balance: @Model.Sum(x => x.Amount).Currency()
+<br/>
+<br/>
+<table style="width: 100%;font-size:1em">
+@foreach (Transaction tx in Model)
+{
+    <tr style="border-bottom:solid 1px #99aaff">
+        <td>@tx.TxDateUTC.ConvertUTCToTZ("PT").ToString("MM/dd/yy")</td>
+        <td>@tx.Player.DisplayName</td>
+        <td style="text-align: right">@tx.Amount.Currency()</td>
+    </tr>
+}
+</table>

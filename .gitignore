@@ -1,0 +1,9 @@
+.vs/
+db backups/
+GorillaGolfAPI/bin/
+GorillaGolfWeb/bin/
+GorillaGolfCommon/obj/
+GorillaGolfCommon/bin/
+GorillaGolfWeb/obj/
+packages/
+GorillaGolfAPI/obj/

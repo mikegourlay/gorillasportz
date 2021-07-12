@@ -1,0 +1,136 @@
+﻿@using GorillaGolfCommon.golf
+@model GorillaGolfCommon.golf.Course
+
+@{
+    ViewBag.Title = "EditCourse";
+    Layout = "~/Areas/Admin/Views/Shared/Modal_Layout.cshtml";
+}
+
+<script type="text/javascript">
+    function SetAllPar(frontNine) {
+        var selectList = frontNine ? $("div#frontnineDiv").find("select") : $("div#backnineDiv").find("select");
+        selectList.each(function () {
+            $(this).val("4");
+        });
+    }
+
+    function ClearAllPar(frontNine) {
+        var selectList = frontNine ? $("div#frontnineDiv").find("select") : $("div#backnineDiv").find("select");
+        selectList.each(function () {
+            $(this).val("0");
+        });
+    }
+</script>
+
+@using (Html.BeginForm("EditCourse", "Admin", FormMethod.Post, new { id = "EditCourseForm" }))
+{
+    <div class="buttonheader headerBanner">
+        <input type="button" id="CancelCourseBtn" value="Cancel" class="ui-button ui-corner-all" onclick="location.href='@Url.Action("ViewCourse", "Admin", new {courseid = Model.CourseID})'" style="float:left" />
+        <input id="SaveCourseBtn" type="submit" value="Save" class="ui-button ui-corner-all" style="float: right" />
+
+    </div>
+    @Html.ValidationSummary(true, "", new { style = "color:#a00" })
+
+    @Html.HiddenFor(x => x.CourseID)
+
+    <div class="form-group">
+        @Html.LabelFor(x => x.Name, "Course Name")
+        @Html.TextBoxFor(x => x.Name, new { @class = "form-control", id = "Name", style = "width:500px" })
+    </div>
+    <div class="form-group" style="float: left">
+        @Html.LabelFor(x => x.Slope, "Slope")
+        @Html.TextBoxFor(x => x.Slope, new { @class = "form-control", style = "width:60px" })
+    </div>
+    <div class="form-group" style="float: left; margin-left: 20px">
+        @Html.LabelFor(x => x.Rating, "Rating")
+        @Html.TextBoxFor(x => x.Rating, new { @class = "form-control", style = "width:60px" })
+    </div>
+
+    <div id="frontnineDiv" style="clear: both; float: left;margin-top: 10px; border: solid 1px #ccc; padding: 10px" class="ui-corner-all">
+        <button class="ui-button ui-corner-all small-button" onclick="SetAllPar(true); return false;">Set All</button>
+        <button class="ui-button ui-corner-all small-button" onclick="ClearAllPar(true); return false;">Clear All</button>
+        <table style="margin-top: 10px">
+            <tr>
+                <td style="text-align: center"><label>Hole</label></td>
+                <td style="text-align: center"><label>Par</label></td>
+                <td style="text-align: center"><label>HC</label></td>
+            </tr>
+
+            @foreach (Hole hole in Model.HoleList.Take(9))
+            {
+                var parChoices = new List<SelectListItem>
+                {
+                    new SelectListItem {Text = "", Value = "0", Selected = hole.Par == 0},
+                    new SelectListItem {Text = "3", Selected = hole.Par == 3},
+                    new SelectListItem {Text = "4", Selected = hole.Par == 4},
+                    new SelectListItem {Text = "5", Selected = hole.Par == 5}
+                };
+                var handicapChoices = new List<SelectListItem>
+                {
+                    new SelectListItem {Text = "", Value = "", Selected = hole.Handicap == null},
+                };
+                for (int i = 1; i <= 18; i++)
+                {
+                    handicapChoices.Add(new SelectListItem { Text = i.ToString(), Selected = hole.Handicap == i });
+                }
+                <tr>
+                    <td style="text-align: center">
+                        <b>@Html.DisplayFor(x => x.HoleList[hole.HoleNumber - 1].HoleNumber)</b>
+                        @Html.HiddenFor(x => x.HoleList[hole.HoleNumber - 1].HoleNumber)
+                    </td>
+                    <td style="text-align: center">
+                        @Html.DropDownListFor(x => x.HoleList[hole.HoleNumber - 1].Par, parChoices, new { @class = "form-control", style = "width:60px" })
+                    </td>
+                    <td style="text-align: center">
+                        @Html.DropDownListFor(x => x.HoleList[hole.HoleNumber - 1].Handicap, handicapChoices, new { @class = "form-control", style = "width:6opx" })
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div id="backnineDiv" style="float: left;margin-top: 10px; margin-left: 10px; border: solid 1px #ccc; padding: 10px" class="ui-corner-all">
+        <button class="ui-button ui-corner-all small-button" onclick="SetAllPar(false); return false;">Set All</button>
+        <button class="ui-button ui-corner-all small-button" onclick="ClearAllPar(false); return false;">Clear All</button>
+
+        <table style="margin-top:10px">
+            <tr>
+                <td style="text-align: center"><label>Hole</label></td>
+                <td style="text-align: center"><label>Par</label></td>
+                <td style="text-align: center"><label>HC</label></td>
+            </tr>
+            @foreach (Hole hole in Model.HoleList.Skip(9).Take(9))
+            {
+                var parChoices = new List<SelectListItem>
+            {
+                new SelectListItem {Text = "", Value = "0", Selected = hole.Par == 0},
+                new SelectListItem {Text = "3", Selected = hole.Par == 3},
+                new SelectListItem {Text = "4", Selected = hole.Par == 4},
+                new SelectListItem {Text = "5", Selected = hole.Par == 5}
+            };
+                var handicapChoices = new List<SelectListItem>
+            {
+                new SelectListItem {Text = "", Value = "", Selected = hole.Handicap == null},
+            };
+                for (int i = 1; i <= 18; i++)
+                {
+                    handicapChoices.Add(new SelectListItem { Text = i.ToString(), Selected = hole.Handicap == i });
+                }
+                <tr>
+                    <td style="text-align: center">
+                        <b>@Html.DisplayFor(x => x.HoleList[hole.HoleNumber - 1].HoleNumber)</b>
+                        @Html.HiddenFor(x => x.HoleList[hole.HoleNumber - 1].HoleNumber)
+                    </td>
+                    <td style="text-align: center">
+                        @Html.DropDownListFor(x => x.HoleList[hole.HoleNumber - 1].Par, parChoices, new { @class = "form-control", style = "width:60px" })
+                    </td>
+                    <td style="text-align: center">
+                        @Html.DropDownListFor(x => x.HoleList[hole.HoleNumber - 1].Handicap, handicapChoices, new { @class = "form-control", style = "width:6opx" })
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+
+}
+
+

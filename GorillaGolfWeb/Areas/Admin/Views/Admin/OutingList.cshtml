@@ -1,0 +1,42 @@
+﻿@using GorillaGolfCommon.golf
+@model GorillaGolfWeb.Areas.Admin.Models.OutingListModel
+@{
+    ViewBag.Title = "Admin Outing List";
+}
+<div>
+    <h4>Outing List</h4>
+    <br />
+    @using (Html.BeginForm("OutingList", "Admin", FormMethod.Post, new { id = "OutingListForm" }))
+    {
+        <div class="form-group">
+            <label for="SeasonSelector" style="font-weight: bold">Season:</label>
+            @Html.DropDownListFor(x => x.Season, new SelectList(ViewBag.SeasonList, "SeasonID", "SeasonName", Model.Season),
+                new {id = "SeasonSelector", @class = "form-control", onchange = "this.form.submit();", style = "display:inline-block;width:200px"})
+        </div>
+    }
+    <br />
+    @Html.ValidationSummary(true, "", new { style = "color:#a00" })
+
+    @if (Model.Season == Season.CurrentSeason)
+    {
+        <input type="button" id="AddOutingBtn" class="ui-button ui-corner-all" value="Add Outing" onclick="location.href = '@Url.Action("AddOuting", "Admin")'" />
+        <br />
+        <br />
+    }
+
+    @foreach (Outing outing in Model.OutingList)
+    {
+        <div class="listitem" onclick="location.href='@Url.Action("ViewOuting", "Admin", new {outingID = outing.OutingID})'">
+            <b>@outing.Course.Name</b>
+            @if (outing.Committed) {<span>&nbsp;-&nbsp;</span><span style="color: white; background-color: #e00;padding:2px 5px">P</span>}
+            @if (outing.Settled) {<span>&nbsp;-&nbsp;</span><span style="color: white; background-color: #0a0;padding:2px 5px">$</span>}
+            @if (outing.NoFlipSkins) {<span style="font-style:italic">&nbsp;&nbsp;-&nbsp;No Flip Skins</span>}
+            <br />@outing.OutingDate.ToShortDateString()
+        </div>
+    }
+
+</div>
+
+
+
+
