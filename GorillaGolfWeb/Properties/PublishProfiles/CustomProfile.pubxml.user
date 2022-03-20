@@ -34,6 +34,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Areas/Admin/Views/Admin/EditPlayer.cshtml">
       <publishTime>03/05/2019 11:37:55</publishTime>
     </File>
+    <File Include="Areas/Admin/Views/Admin/EditPlayersHIndex.cshtml">
+      <publishTime>03/20/2022 15:52:32</publishTime>
+    </File>
     <File Include="Areas/Admin/Views/Admin/OutingList.cshtml">
       <publishTime>05/20/2020 12:47:23</publishTime>
     </File>
@@ -41,7 +44,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/20/2020 12:33:51</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Admin/PlayerList.cshtml">
-      <publishTime>07/03/2019 12:00:52</publishTime>
+      <publishTime>03/20/2022 12:38:14</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Admin/PlayerView.cshtml">
       <publishTime>03/13/2019 13:43:07</publishTime>
@@ -119,16 +122,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/12/2019 18:33:24</publishTime>
     </File>
     <File Include="bin/GorillaGolfCommon.dll">
-      <publishTime>03/19/2022 15:25:53</publishTime>
+      <publishTime>03/20/2022 15:41:40</publishTime>
     </File>
     <File Include="bin/GorillaGolfCommon.pdb">
-      <publishTime>03/19/2022 15:25:53</publishTime>
+      <publishTime>03/20/2022 15:41:40</publishTime>
     </File>
     <File Include="bin/GorillaGolfWeb.dll">
-      <publishTime>03/19/2022 15:25:55</publishTime>
+      <publishTime>03/20/2022 15:53:21</publishTime>
     </File>
     <File Include="bin/GorillaGolfWeb.pdb">
-      <publishTime>03/19/2022 15:25:55</publishTime>
+      <publishTime>03/20/2022 15:53:21</publishTime>
     </File>
     <File Include="bin/Microsoft.AI.Agent.Intercept.dll">
       <publishTime>11/30/2016 16:07:42</publishTime>
