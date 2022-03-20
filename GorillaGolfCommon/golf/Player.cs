@@ -417,12 +417,20 @@ namespace GorillaGolfCommon.golf
             return true;
         }
 
-        public static void UpdateHIndex(int playerID, decimal hindex)
+        public static void UpdateHIndex(int playerID, decimal? hindex)
         {
             const string sql = "update Player set HIndex = @hindex, HIndexLastUpdateUTC = @nowutc where playerID = @playerid";
             using (SqlConnection conn = DB.GetConnection(Settings.GetDSN()))
             {
-                DB.ExecSQL(sql, conn, "@playerid", playerID.ToString(), "@hindex", hindex.ToString(), "@nowutc", DB.SqlDate(DateTime.UtcNow));
+                DB.ExecSQL(sql, conn, "@playerid", playerID.ToString(), "@hindex", hindex?.ToString(), "@nowutc", DB.SqlDate(DateTime.UtcNow));
+            }
+        }
+
+        public static void UpdateHIndexes(List<Player> playerList)
+        {
+            foreach (Player p in playerList)
+            {
+               UpdateHIndex(p.PlayerID, p.HIndex);
             }
         }
     }

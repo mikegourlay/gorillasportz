@@ -1,0 +1,38 @@
+﻿@using GorillaGolfCommon.golf
+@using GorillaGolfWeb.Areas.Admin.Models
+@model PlayersHIndexModel
+
+@{
+    ViewBag.Title = "Edit Players' HIndex";
+    Layout = "~/Areas/Admin/Views/Shared/Modal_Layout.cshtml";
+}
+
+@using (Html.BeginForm("EditPlayersHIndex", "Admin", FormMethod.Post, new { id = "EditPlayersHIndexForm" }))
+{
+
+    <div class="buttonheader headerBanner">
+        <input type="button" id="CancelEditHIndexBtn" value="Cancel" class="ui-button ui-corner-all" onclick="location.href='@Url.Action("PlayerList", "Admin")'" style="float:left" />
+        <input id="SavePlayerHIndexBtn" type="submit" value="Save" class="ui-button ui-corner-all" style="float: right" />
+    </div>
+
+    <div>
+        <h4>Edit Players' HIndex</h4>
+        <br />
+        
+        <table>
+            @for (int i = 0; i < Model.PlayerList.Count(); i++)
+            {
+                <tr>
+                    <td style="text-align: right;vertical-align: bottom">
+                        @Html.HiddenFor(x => x.PlayerList[i].PlayerID)
+                        @Html.LabelFor(x => x.PlayerList[i].DisplayName, Model.PlayerList[i].DisplayName):
+                    </td>
+                    <td style="text-align: left; vertical-align: middle;padding-left:10px">
+                        @Html.TextBoxFor(x => x.PlayerList[i].HIndex, new { @class = "form-control" , style="width:75px", onclick="this.select()"})
+                    </td>
+                </tr>
+            }
+        </table>
+        
+    </div>
+}

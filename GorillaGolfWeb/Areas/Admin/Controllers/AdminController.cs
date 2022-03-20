@@ -189,8 +189,25 @@ namespace GorillaGolfWeb.Areas.Admin.Controllers
             return View("EditPlayer", player);
         }
 
-        
+        [HttpGet]
+        public ActionResult EditPlayersHIndex()
+        {
+            // Get players but filter out ones that do not have a GHIN because we cannot update their HIndex
+            List<Player> playerList = Player.GetPlayers(true).Where(x => x.GHIN.IsNotEmpty()).ToList();
+            PlayersHIndexModel playerHIndexModel = new PlayersHIndexModel { PlayerList = playerList};
+            return View("EditPlayersHIndex", playerHIndexModel);
+        }
 
+        [HttpPost]
+        public ActionResult EditPlayersHIndex(PlayersHIndexModel playerHIndexModel)
+        {
+            Player.UpdateHIndexes(playerHIndexModel.PlayerList);
+            List<Player> playerList = Player.GetPlayers(true);
+            return RedirectToAction("PlayerList", playerList);
+        }
+
+        // Not used currently because the GHIN.com API is no longer available
+        // Have to edit the HIndex of players manually.
         public ActionResult UpdatePlayersHIndex()
         {
             List<Player> playerList = Player.GetPlayers(true);

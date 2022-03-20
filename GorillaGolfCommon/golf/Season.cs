@@ -8,7 +8,7 @@ namespace GorillaGolfCommon.golf
 {
     public class Season
     {
-        public const int CurrentSeason = 2021;
+        public const int CurrentSeason = 2022;
 
         public string SeasonName { get; set; }
         public int SeasonID { get; set; }
@@ -27,9 +27,14 @@ namespace GorillaGolfCommon.golf
             },
             new Season
             {
-            SeasonName = "2021",
-            SeasonID = 2021
-        }
+                SeasonName = "2021",
+                SeasonID = 2021
+            },
+            new Season
+            {
+                SeasonName = "2022",
+                SeasonID = 2022
+            }
         };
     }
 

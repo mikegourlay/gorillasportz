@@ -8,7 +8,7 @@
     <br />
     @Html.ValidationSummary(true, "", new { style = "color:#a00" })
     <button id="AddPlayerBtn" class="ui-button ui-corner-all" onclick="location.href='@Url.Action("AddPlayer", "Admin")'">Add Player</button>
-    <button id="UpdateHIndexBtn" class="ui-button ui-corner-all" onclick="openHIndexNotification();location.href='@Url.Action("UpdatePlayersHIndex", "Admin")';">Update Handicaps</button>
+    <button id="EditHIndexBtn" class="ui-button ui-corner-all" onclick="location.href='@Url.Action("EditPlayersHIndex", "Admin")';">Edit Handicaps</button>
     <br /><br />
 
     @foreach (Player p in Model)
